@@ -1,1 +1,81 @@
+version: 2.1
+
+jobs:
+  stage:
+    docker:
+      - image: cimg/node:23.7.0
+    parallelism: 4
+    steps:
+      - checkout
+      - run:
+          name: app
+          no_output_timeout: 1h
+          command: |
+            npm install
+
+  build:
+    docker:
+      - image: cimg/node:23.6.1
+    parallelism: 8
+    steps:
+      - checkout
+      - run:
+          name: app
+          no_output_timeout: 1h
+          command: |
+            npm install
+
+  test:
+    docker:
+      - image: cimg/node:22.13.1
+    parallelism: 16
+    steps:
+      - checkout
+      - run:
+          name: app
+          no_output_timeout: 1h
+          command: |
+            npm install
+
+  hold:
+    docker:
+      - image: cimg/node:20.18.2
+    parallelism: 25
+    steps:
+      - checkout
+      - run:
+          name: app
+          command: |
+            npm install
+
+  deploy:
+    docker:
+      - image: cimg/node:18.20.6
+    parallelism: 6
+    steps:
+      - checkout
+      - run:
+          name: app
+          no_output_timeout: 1h
+          command: |
+            npm install
+
+
+
+workflows:
+  my_all:
+    jobs:
+      - stage
+      - build:
+          requires:
+            - stage
+      - test:
+          requires:
+            - build
+      - hold:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - hold
 
